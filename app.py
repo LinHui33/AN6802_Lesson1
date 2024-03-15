@@ -1,33 +1,39 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 from flask import Flask,request,render_template
-
-
-# In[2]:
-
 
 app = Flask(__name__)
 
 
-# In[ ]:
-
-
 @app.route("/",methods = ["GET","POST"])
 def index():
-    if request.method == "POST":
+    return render_template("index.html")
 
-        return render_template("index.html", result = price)
+@app.route("/main",methods = ["GET","POST"])
+def main():
+    name = request.form.get("name")
+    return render_template("main.html", name = name)
+@app.route("/ethical_test",methods = ["GET","POST"])
+def ethical_test():
+    return render_template("ethical_test.html")
+
+@app.route("/answer",methods = ["GET","POST"])
+def answer():
+    answer = request.form.get("options")
+    if answer.lower() == "true":
+        return render_template("wrong.html")
     else:
-        return render_template("index.html", result = "waiting for exchange rate.............")
+        return render_template("correct.html")
+
+@app.route("/end",methods = ["GET","POST"])
+def end():
+    return render_template("end.html")
+    
+    
+
 if __name__ == "__main__":
     app.run()
-
-
-# In[ ]:
 
 
 
