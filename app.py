@@ -7,7 +7,8 @@
 from flask import Flask,request,render_template,Markup
 import datetime
 import sqlite3
-
+import replicate
+import os
 
 # In[2]:
 
@@ -73,6 +74,20 @@ def prediction():
     expense = income *0.485 + 147.47
     return render_template("prediction.html", expense = expense)
 
+@app.route("/music", methods =  ["GET","POST"])
+def music():
+    return render_template("music.html")
+
+@app.route("/music_generator", methods =  ["GET","POST"])
+def music_generator():
+    api_token_str = request.form.get("api")
+    os.environ["REPLICATE_API_TOKEN"] = api_token_str
+    q = request.form.get("api")
+    r = replicate.run("meta/musicgen:7be0f12c54a8d033a0fbd14418c9af98962da9a86f5ff7811f9b3423a1f0b7d7", 
+                  input={ "prompt": q, "duration": 5 } ) 
+    
+    return render_template("music_generator.html", r = r)
+
 @app.route("/delete",methods = ["GET","POST"])
 def deleteDB():
     conn = sqlite3.connect("log.db")
@@ -95,8 +110,6 @@ def end():
 if __name__ == "__main__":
     app.run()
 
-
-# In[ ]:
 
 
 
